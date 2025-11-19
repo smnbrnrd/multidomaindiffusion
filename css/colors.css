@@ -1,0 +1,24 @@
+:root {
+    /* color palettes from coolors.com */
+    
+    /* palette1: https://coolors.co/palette/2f6690-3a7ca5-d9dcd6-16425b-81c3d7 */
+    --palette1-color1: #2f6690;
+    --palette1-color2: #3a7ca5;
+    --palette1-color3: #d9dcd6;
+    --palette1-color4: #16425b;
+    --palette1-color5: #81c3d7;
+
+    /* palette2: https://coolors.co/0d1b2a-1b263b-415a77-778da9-e0e1dd */
+    --palette2-color1: #0d1b2a;
+    --palette2-color2: #1b263b;
+    --palette2-color3: #415a77;
+    --palette2-color4: #778da9;
+    --palette2-color5: #e0e1dd;
+
+    --primary-color: var(--palette1-color1);
+    --secondary-color: var(--palette1-color3);
+    --link-color: var(--palette2-color4);
+    --alert-color: var(--palette1-color2);
+    --danger-color: #b92d38;
+    --success-color: #2a9d8f;
+}

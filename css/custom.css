@@ -1,0 +1,473 @@
+@import url('fonts.css');
+@import url('colors.css');
+@import url('fonts/fontawesome/css/font-awesome.css');
+
+/*************************************
+* RESET STYLES
+*************************************/
+
+.reveal .slides,
+.reveal .slides figure,
+.reveal .slides section h1, 
+.reveal .slides section h2,
+.reveal .slides section ul,
+.reveal .slides section p 
+{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/*********************************************
+* REVEAL THEMING
+*********************************************/
+
+
+.reveal .slides {
+    text-align: left;
+    font-family: "Fira Sans", "PT Sans", Calibri, Tahoma, sans-serif;
+    font-size: 12pt;
+    line-height: 1.5;
+}
+/* customize the slide number */
+.reveal .slide-number { 
+    font-size: 16pt;
+    margin: 0.2rem;
+    color: var(--primary-color);
+    background-color: transparent;
+}
+.reveal .slide-number a { text-decoration: none; }
+
+/* customize the progress bar */
+.reveal .progress {
+    background: var(--secondary-color);
+    color: var(--primary-color);
+    height: 0.7%;
+}
+
+/* all slides are a vertical flexboxes. Each item is stacked from top to bottom */
+.reveal .slides section {
+    height: 100%;
+    display: flex !important;
+    flex-flow: column nowrap;
+}
+
+/* add LITIS logo at bottom-left of the viewport */
+.reveal-viewport {
+    background-image: url(../img/logo_litis.png);
+    background-size: 6% auto;
+    background-repeat: no-repeat;
+    background-position: 1% 98%;
+}
+
+/* class for aligning element within a slide */
+.reveal .slides section .align-left {
+    align-self: flex-start;
+}
+.reveal .slides section .align-center {
+    align-self: center;
+}
+.reveal .slides section .align-right {
+    align-self: flex-end;
+}
+
+/* Title slide  **************************/
+/* on title and section slides, the content is centered vertically */
+.reveal .slides section.title-slide {
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+}
+.reveal .slides section.title-slide h1 {
+    font-size: 2.2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-weight: normal;
+}
+/* add a horizontal bar below the title */
+.reveal .slides section.title-slide h1:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 4px;
+    background-color: var(--primary-color);
+    margin-top: 0.3em
+}
+.reveal .slides section.title-slide .author {
+    font-size: 1.2rem;
+    margin-bottom: 0.2rem;
+}
+.reveal .slides section.title-slide .institution {
+    font-size: 0.8rem;
+}
+.reveal .slides section.title-slide img.logo {
+    height: 3.5rem;
+    margin: 2rem 1.5rem 0 auto;
+}
+
+/* Regular slide styles **************************/
+.reveal .slides section h1, 
+.reveal .slides section h2 {
+    box-sizing: border-box;
+    width: 100%;
+    text-align: left;
+    font-weight: normal;
+}
+.reveal .slides section h1 {
+    color: var(--primary-color);
+    font-size: 1.5em;
+    padding: 0.5rem 0 0.8rem 0;
+}
+.reveal .slides section h1:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: var(--primary-color);
+    margin-top: 0.4rem;
+}
+.reveal .slides section h2 {
+    font-size: 1.2rem;
+    padding-bottom: 0.3rem;
+}
+
+/* Grid system with flexboxes **************************/
+.reveal .slides section .row {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: space-evenly;
+}
+.reveal .slides section .row:before,
+.reveal .slides section .row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+.reveal .slides .row .col {
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    margin: auto;
+    /*border: solid 1px var(--secondary-color);*/
+}
+section .row *[class*='col-'] {
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    /*border: solid 1px var(--secondary-color);*/
+}
+
+.col-05 { width: 0.5%; }
+.col-1 { width: 1%; }
+.col-2 { width: 2%; }
+.col-3 { width: 3%; }
+.col-4 { width: 4%; }
+.col-5 { width: 5%; }
+.col-6 { width: 6%; }
+.col-7 { width: 7%; }
+.col-8 { width: 8%; }
+.col-9 { width: 9%; }
+.col-10 { width: 10%; }
+.col-11 { width: 11%; }
+.col-12 { width: 12%; }
+.col-13 { width: 13%; }
+.col-14 { width: 14%; }
+.col-15 { width: 15%; }
+.col-16 { width: 16%; }
+.col-17 { width: 17%; }
+.col-18 { width: 18%; }
+.col-19 { width: 19%; }
+.col-20 { width: 20%; }
+.col-21 { width: 21%; }
+.col-22 { width: 22%; }
+.col-23 { width: 23%; }
+.col-24 { width: 24%; }
+.col-25 { width: 25%; }
+.col-26 { width: 26%; }
+.col-27 { width: 27%; }
+.col-28 { width: 28%; }
+.col-29 { width: 29%; }
+.col-30 { width: 30%; }
+.col-31 { width: 31%; }
+.col-32 { width: 32%; }
+.col-33 { width: 33.33%; }
+.col-34 { width: 34%; }
+.col-35 { width: 35%; }
+.col-36 { width: 36%; }
+.col-37 { width: 37%; }
+.col-38 { width: 38%; }
+.col-39 { width: 39%; }
+.col-40 { width: 40%; }
+.col-41 { width: 41%; }
+.col-42 { width: 42%; }
+.col-43 { width: 43%; }
+.col-44 { width: 44%; }
+.col-45 { width: 45%; }
+.col-46 { width: 46%; }
+.col-47 { width: 47%; }
+.col-48 { width: 48%; }
+.col-49 { width: 49%; }
+.col-50 { width: 50%; }
+.col-51 { width: 51%; }
+.col-52 { width: 52%; }
+.col-53 { width: 53%; }
+.col-54 { width: 54%; }
+.col-55 { width: 55%; }
+.col-56 { width: 56%; }
+.col-57 { width: 57%; }
+.col-58 { width: 58%; }
+.col-59 { width: 59%; }
+.col-60 { width: 60%; }
+.col-61 { width: 61%; }
+.col-62 { width: 62%; }
+.col-63 { width: 63%; }
+.col-64 { width: 64%; }
+.col-65 { width: 65%; }
+.col-66 { width: 66.66%; }
+.col-67 { width: 67%; }
+.col-68 { width: 68%; }
+.col-69 { width: 69%; }
+.col-70 { width: 70%; }
+.col-71 { width: 71%; }
+.col-72 { width: 72%; }
+.col-73 { width: 73%; }
+.col-74 { width: 74%; }
+.col-75 { width: 75%; }
+.col-76 { width: 76%; }
+.col-77 { width: 77%; }
+.col-78 { width: 78%; }
+.col-79 { width: 79%; }
+.col-80 { width: 80%; }
+.col-81 { width: 81%; }
+.col-82 { width: 82%; }
+.col-83 { width: 83%; }
+.col-84 { width: 84%; }
+.col-85 { width: 85%; }
+.col-86 { width: 86%; }
+.col-87 { width: 87%; }
+.col-88 { width: 88%; }
+.col-89 { width: 89%; }
+.col-90 { width: 90%; }
+.col-91 { width: 91%; }
+.col-92 { width: 92%; }
+.col-93 { width: 93%; }
+.col-94 { width: 94%; }
+.col-95 { width: 95%; }
+.col-96 { width: 96%; }
+.col-97 { width: 97%; }
+.col-98 { width: 98%; }
+.col-99 { width: 99%; }
+.col-100 { width: 100%; }
+
+
+/*********************************************
+* GLOBAL STYLES
+*********************************************/
+p { 
+    margin: 0.8rem 0 0.8rem 0 !important;
+    text-align: left; 
+}
+.grey { color: grey; }
+.alert {
+    color: var(--alert-color);
+}
+.danger {
+    color: var(--danger-color);
+}
+.success {
+    color: var(--success-color);
+}
+.exponent { vertical-align: super; font-size: 0.6em; }
+.subscript { vertical-align: sub; font-size: 0.6em; }
+
+.m-auto { margin: auto !important; }
+.m-0 { margin: 0 !important; }
+.m-1 { margin: 0.25rem !important; }
+.m-2 { margin: 0.5rem !important; }
+.m-3 { margin: 1rem !important; }
+.m-4 { margin: 1.5rem !important; }
+.m-5 { margin: 3rem !important; }
+.p-0 { padding: 0 !important; }
+.p-1 { padding: 0.25rem !important; }
+.p-2 { padding: 0.5rem !important; }
+.p-3 { padding: 1rem !important; }
+.p-4 { padding: 1.5rem !important; }
+.p-5 { padding: 3rem !important; }
+
+.mt-0 { margin-top: 0 !important; }
+.mt-1 { margin-top: 0.25rem !important; }
+.mt-2 { margin-top: 0.5rem !important; }
+.mt-3 { margin-top: 1rem !important; }
+.mt-4 { margin-top: 1.5rem !important; }
+.mt-5 { margin-top: 3rem !important; }
+.mb-0 { margin-bottom: 0 !important; }
+.mb-1 { margin-bottom: 0.25rem !important; }
+.mb-2 { margin-bottom: 0.5rem !important; }
+.mb-3 { margin-bottom: 1rem !important; }
+.mb-4 { margin-bottom: 1.5rem !important; }
+.mb-5 { margin-bottom: 3rem !important; }
+
+.pt-0 { padding-top: 0 !important; }
+.pt-1 { padding-top: 0.25rem !important; }
+.pt-2 { padding-top: 0.5rem !important; }
+.pt-3 { padding-top: 1rem !important; }
+.pt-4 { padding-top: 1.5rem !important; }
+.pt-5 { padding-top: 3rem !important; }
+.pb-0 { padding-bottom: 0 !important; }
+.pb-1 { padding-bottom: 0.25rem !important; }
+.pb-2 { padding-bottom: 0.5rem !important; }
+.pb-3 { padding-bottom: 1rem !important; }
+.pb-4 { padding-bottom: 1.5rem !important; }
+.pb-5 { padding-bottom: 3rem !important; }
+
+section .normal { font-size: 0.7em !important; }
+section .small { font-size: 0.65em !important; }
+section .smaller { font-size: 0.6em !important; }
+section .smallest { font-size: 0.55em !important; }
+section .big { font-size: 1em !important; }
+section .bigger { font-size: 1.2em !important; }
+section .biggest { font-size: 1.5em !important; }
+
+section .left { text-align: left; }
+section .right { text-align: right; }
+section .center { text-align: center; }
+section .justify { text-align: justify; }
+
+section .strong { font-weight: bold; }
+section .em { font-style: italic; }
+section .u { text-decoration: underline; }
+section .strike { text-decoration: line-through; }
+section .tt { font-family: monospace; }
+section .sf { font-family: sans-serif; }
+
+.float-left { float: left; }
+.float-right { float: right; }
+.reveal .slides section .clear { 
+    clear: both; 
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: underline;
+}
+a:hover {
+    color: var(--link-color);
+    text-decoration: underline;
+}
+
+/*********************************************
+* lists */
+ul { 
+    list-style-type: none; 
+    text-align: left;
+    padding-left:1rem;
+    margin: 0.8rem 0 0.8rem 1rem !important;
+}
+
+ul > li {
+    margin: 0.5rem 0; 
+}
+
+ul > li:before {
+    font-family: FontAwesome;
+    font-size: 0.8rem;
+    content: "\f138";
+    color: var(--primary-color);
+    margin-right: 0.8rem;
+}
+ul > li.circle:before { content: "\f111"; }
+ul > li.check-circle:before { content: "\f058"; }
+ul > li.square:before { content: "\f0c8"; }
+ul > li.check-square:before { content: "\f14a"; }
+ul > li.arrow-circle:before { content: "\f0a9"; }
+ul > li.gear:before { content: "\f013"; }
+ul > li.star:before { content: "\f005"; }
+ul > li.caret-right:before { content: "\f0da"; }
+ul > li.play-circle:before { content: "\f144"; }
+ul > li.play:before { content: "\f04b"; }
+
+ol {
+    list-style-type: decimal;
+    text-align: left;
+    padding-left: 1.2rem;
+    margin-bottom:0.8rem;
+}
+ol li::marker {
+    color: var(--primary-color);
+}
+
+/*********************************************
+* images */
+img {
+    max-width: 100%;
+    height: auto;
+}
+img.framed {
+    border: solid 1px var(--secondary-color);
+}
+
+
+.w-100 { width: 100%; }
+.w-95 { width: 95%; }
+.w-90 { width: 90%; }
+.w-85 { width: 85%; }
+.w-80 { width: 80%; }
+.w-75 { width: 75%; }
+.w-70 { width: 70%; }
+.w-65 { width: 65%; }
+.w-60 { width: 60%; }
+.w-55 { width: 55%; }
+.w-50 { width: 50%; }
+.w-45 { width: 45%; }
+.w-40 { width: 40%; }
+.w-35 { width: 35%; }
+.w-33 { width: 33.33%; }
+.w-30 { width: 30%; }
+.w-25 { width: 25%; }
+.w-20 { width: 20%; }
+.w-15 { width: 15%; }
+.w-10 { width: 10%; }
+.w-05 { width: 5%; }
+.h-1 { height: 1em; }
+.h-2 { height: 2em; }
+.h-3 { height: 3em; }
+.h-4 { height: 4em; }
+.h-5 { height: 5em; }
+
+figure {
+    margin: 0;
+}
+figcaption {
+    font-size: 0.6em;
+    color: grey;
+    margin-top: 0.3em;
+}
+figcaption a {
+    text-decoration: underline;
+}
+
+/*********************************************/
+div.boxtitle {
+    background-color: var(--primary-color);
+    color: white;
+    border-top-left-radius: .3em;
+    border-top-right-radius: .3em;
+    padding: 6px;
+    text-align: left;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+div.boxcontent {
+    background-color: #eaedf1;
+    color: var(--primary-color);
+    border-bottom-left-radius: .3em;
+    border-bottom-right-radius: .3em;
+    padding: 4px;
+    margin-top: 0px;
+    margin-bottom: 1em;
+    text-align: left;
+    text-justify: inter-word;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+div.boxcontent ul {
+    padding-left: 1.2em;
+    margin-bottom: 0.5em;
+}

@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Workshop Santiago</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="reveal/dist/reveal.css">
+    <link rel="stylesheet" href="reveal/plugin/highlight/zenburn.css" />
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!--------------------------------------------->
+            <!-- Cover slide -->
+            <section class="title-slide" data-background-image="img/background.jpg" data-background-opacity="0.3">
+                <h1>Semi-supervised multi-domain translation with diffusion models</h1>
+                <div class="author">Tsiry MAYET <span class="grey exponent">(2)</span>, Simon BERNARD <span class="grey exponent">(1)</span>, Romain HÉRAULT <span class="grey exponent">(3)</span>, Clément CHATELAIN <span class="grey exponent">(2)</span></div>
+                <div class="institution">1. LITIS, Université de Rouen Normandie</div>
+                <div class="institution">2. LITIS, INSA Rouen Normandie</div>
+                <div class="institution">3. GREYC, Université Caen Normandie</div>
+                <div>
+                    <img src="img/logo_litis.png" class="logo" alt="logo_litis">
+                    <img src="img/logo_urn.png" class="logo" alt="logo_urn" style="height: 3.65rem;">
+                    <img src="img/logo_insarn.png" class="logo" alt="logo_insarn">
+                    <img src="img/logo_anr.png" class="logo" alt="logo_anr">
+                </div>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Domain translation</h1>
+                <div class="boxtitle mt-2">Definition</div>
+                <div class="boxcontent"><em>Domain translation</em> is the task of <strong>transforming samples from one domain into samples of another domain, while preserving semantic content</strong>. A typical example is <em>image-to-image translation</em> where the task is to convert images from one style to another.</div>
+                <figure class="center mt-2">
+                    <img src="img/cyclegan_results.jpg" alt="Examples of image-to-image translation using CycleGAN" class="w-85">
+                    <figcaption>Source: <a href="https://arxiv.org/abs/1611.07004" target="_blank">Zhu et al., ICCV, 2017</a> (CycleGAN)</figcaption>
+                </figure>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Domain translation</h1>
+                <h2>Formal definition</h2>
+                <ul>
+                    <li>2 data domains: a source domain $\mathcal{X}$ and a target domain $\mathcal{Y}$</li>
+                    <li>Domain translation (DT) function $f: \mathcal{X} \rightarrow \mathcal{Y}$ s.t. 
+                        $$\mathbf{y} = f(\mathbf{x}) \quad \forall \text{ corresponding pairs } (\mathbf{x}, \mathbf{y}) \in \mathcal{X} \times \mathcal{Y}$$
+                    </li>
+                    <li>$\mathbf{x}$ and $\mathbf{y}$ are representations of the same sample in both domains</li>
+                    <li class="alert">The goal is to learn the DT function $f$ from the data</li>
+                </ul>
+                <div class="row">
+                    <div class="col-55">
+                        <p>Important question: do we have pairs for training?</p>
+                        <ul>
+                            <li><span class="alert">Supervised</span>: corresponding pairs $(\mathbf{x}, \mathbf{y})$ available for training</li>
+                            <li><span class="alert">Unsupervised</span>: no corresponding pairs available for training</li>
+                        </ul>
+                    </div>
+                    <div class="col-45">
+                        <figure class="center" style="position:relative; bottom:2em;">
+                            <img src="img/sup_unsup_domaintranslation.png" class="w-95 float-right" alt="Supervised vs Unsupervised Learning">
+                            <figcaption>Source: <a href="https://arxiv.org/abs/1703.10593" target="_blank">Zhu et al., ICCV, 2017</a> (CycleGAN)</figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Domain translation</h1>
+                <h2>Examples of unsupervised image-to-image translation tasks</h2>
+                <div class="row mt-4">
+                    <div class="col-25">
+                        <figure class="center">
+                            <img src="img/unsupdomaintranslation_example1.png" class="w-98 framed" alt="controlled image generation example">
+                            <figcaption><span class="strong bigger">Controlled image generation</span> <br> Source: <a href="https://arxiv.org/abs/2302.05543" target="_blank">Zhang et al., ICCV, 2023</a> (ControlNet)</figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-30">
+                        <figure class="center">
+                            <img src="img/unsupdomaintranslation_example2.png" class="w-95" alt="data augmentation in medical scan example">
+                            <figcaption><span class="strong bigger">Data augmentation</span><br> Source: <a href="https://www.nature.com/articles/s41598-019-52737-x" target="_blank">Sandfort et al., Scientific Reports, 2019</a></figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-35">
+                        <figure class="center">
+                            <img src="img/unsupdomaintranslation_example3.png" class="w-98" alt="Image manipulation example">
+                            <figcaption><span class="strong bigger">Image manipulation, super-resolution</span><br> Source: <a href="https://arxiv.org/pdf/2008.00951" target="_blank">Richardson et al., CVPR, 2021</a> (pixel2style2pixel)</figcaption>
+                        </figure>
+                    </div>
+                </div>
+                <figure class="center mt-3">
+                    <img src="img/unsupdomaintranslation_example4.png" class="w-85" alt="style transfer example">
+                    <figcaption><span class="strong bigger">Style transfer</span><br> Source: <a href="https://arxiv.org/abs/1611.07004" target="_blank">Zhu et al., ICCV, 2017</a> (CycleGAN)</figcaption
+                </figure>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Multi-domain translation</h1>
+                <div class="row">
+                    <div class="col-55 mt-4">
+                        <ul>
+                            <li>Multi-domain translation (MDT) extends DT to multiple domains</li>
+                            <li>A set of more than 2 domains:
+                                $$ \mathcal{D} = \{\mathcal{D}_1, \mathcal{D}_2, \ldots, \mathcal{D}_N\}, \quad N > 2 $$
+                            </li>
+                            <li>No specific source or target domains</li>
+                            <li>Each sample $\mathbf{x}$ has a representation $\mathbf{x}^{(j)} \in \mathcal{D}_j$ (view)</li>
+                            <li>MDT aims to learn a function 
+                                $$f_{S,\bar{S}} : S \rightarrow \bar{S}$$
+                                with $S \in \mathcal{P}(\mathcal{D})$, $\mathcal{P}(\mathcal{D})$ being the power set of $\mathcal{D}$ and $\bar{S} = \mathcal{D} \setminus S$
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-45">
+                        <figure class="center mt-4">
+                            <img src="img/multidomain_celebillustration.jpg" class="w-100">
+                            <figcaption><a href="https://github.com/switchablenorms/CelebAMask-HQ" target="_blank">CelebA-HQ-Mask</a> (<a href="https://arxiv.org/abs/1907.11922" target="_blank">Lee et al., CVPR, 2020</a>) dataset with 3 domains: photos, sketches, and semantic segmentation</figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Semi-supervised multi-domain translation</h1>
+                <div class="row">
+                    <div class="col-55 mt-4">
+                        <ul>
+                            <li>The more domains we have, the harder it is to ensure full supervision:</li>
+                            <ul>
+                                <li>Rapidly expensive and time-consuming</li>
+                                <li>Prone to labelling errors</li>
+                                <li>Do we have access to the same domains for all samples?</li>
+                            </ul>
+                            <li>Semi-supervised MDT:</li>
+                            <ul>
+                                <li class="alert">Being able to train from data with missing views</li>
+                                <li class="alert">Being able to predict from any subsets of domains</li>
+                            </ul>
+                        </ul>
+                    </div>
+                    <div class="col-45">
+                        <figure class="center mt-4">
+                            <img src="img/multidomain_celebillustration.jpg" class="w-100">
+                            <figcaption><a href="https://github.com/switchablenorms/CelebAMask-HQ" target="_blank">CelebAMask-HQ</a> (<a href="https://arxiv.org/abs/1907.11922" target="_blank">Lee et al., CVPR, 2020</a>) dataset with 3 domains: photos, sketches, and semantic segmentation</figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Semi-supervised multi-domain translation</h1>
+                <h2>Challenges : model is not limited to specific translation directions</h2>
+                <ul>
+                    <li>DT setting with $N$ domains : $N \times (N-1)$ translation directions to be learned</li>
+                    <li>MDT setting with $N$ domains : $2^N$ possible combinations</li>
+                </ul>
+                <figure class="center mt-4">
+                    <img src="img/cyclegan_stargan.png" class="w-50" alt="Comparison between CycleGAN and StarGAN architectures">
+                    <figcaption>Source: <a href="https://arxiv.org/abs/1711.09020" target="_blank">Choi et al., CVPR, 2018</a> (StarGAN)</figcaption>
+                </figure>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Semi-supervised multi-domain translation</h1>
+                <h2>Challenges : generative context</h2>
+                <ul>
+                    <li>Some DT directions lead to one unique solution for every sample to translate (e.g. segmentation maps)</li>
+                    <li>Others are generative tasks with multiple valid solutions (e.g. image generation from segmentation maps)</li>
+                </ul>
+                <figure class="center mt-4">
+                    <img src="img/generative_context.png" class="w-80" alt="generative context">
+                </figure>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Semi-supervised multi-domain translation</h1>
+                <h2>Challenges : control over diversity</h2>
+                <ul>
+                    <li>Generative tasks often need the model to produce diverse outputs</li>
+                    <li>Adding conditions as inputs should allow for more control over the generated outputs</li>
+                </ul>
+                <figure class="center mt-4">
+                    <img src="img/mdt_conditions_1.png" class="w-80 mb-3" alt="control over diversity">
+                    <img src="img/mdt_conditions_2.png" class="w-40" alt="control over diversity">
+                </figure>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Semi-supervised multi-domain translation</h1>
+                <h2>Challenges : evaluation?</h2>
+                <ul>
+                    <li>How to evaluate the quality of generated outputs within each domain?</li>
+                    <li>How to evaluate the quality of generated outputs across multiple domains?</li>
+                </ul>
+                <figure class="center mt-2">
+                    <img src="img/mdt_evaluation.png" class="w-80" alt="evaluation challenges in multi-domain translation">
+                </figure>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Semi-supervised multi-domain translation</h1>
+                <h2>Challenges : evaluation?</h2>
+                <div class="row mt-2">
+                    <div class="col-50">
+                        <p>Sample-wise quality metrics:</p>
+                        <ul>
+                            <li><span class="alert">Peak Signal-to-Noise Ratio (PSNR)</span>: pixel-level comparison</li>
+                            <li><span class="alert">Structural Similarity Index (SSIM)</span>: structural comparison</li>
+                            <li><span class="alert">Learned Perceptual Image Patch Similarity (LPIPS)</span>: deep feature comparison</li>
+                        </ul>
+                    </div>
+                    <div class="col-50">
+                        <figure class="center mt-4">
+                            <img src="img/lpips_illustration.png" class="w-90" alt="Illustration of the LPIPS metric">
+                            <figcaption>Source: <a href="https://arxiv.org/abs/1801.03924" target="_blank">Zhang et al., CVPR, 2018</a> (LPIPS). $\mathbf{x}$ is the reference image, $\mathbf{x}_0$ is the generated image, $d_0$ is a distance measure between the two images.</figcaption>
+                        </figure>
+                    </div>
+                </div>
+                <figure class="center mt-4">
+                    <p class="danger">Limited when the generated images may be far from the condition:</p>
+                    <img src="img/mdt_evaluation_limitations.png" class="w-90" alt="Limitations of image generation evaluation metrics">
+                </figure>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Semi-supervised multi-domain translation</h1>
+                <h2>Challenges : evaluation?</h2>
+                <div class="row mt-2">
+                    <div class="col-50">
+                        <p>Distribution-wise quality metrics:</p>
+                        <ul>
+                            <li><span class="alert">Inception Score (IS)</span></li>
+                            <li><span class="alert">Fréchet Inception Distance (FID)</span></li>
+                            <li><span class="alert">Kernel Inception Distance (KID)</span></li>
+                        </ul>
+                        <figure class="center mt-5">
+                            <p class="danger">Does not check relevance against the condition:</p>
+                            <img src="img/mdt_evaluation_limitations_2.png" class="w-80">
+                        </figure>
+                    </div>
+                    <div class="col-50">
+                        <figure class="center mt-4">
+                            <img src="img/fid_illustration.png" class="w-80" alt="Illustration of the FID metric">
+                            <figcaption>Source: <a href="https://arxiv.org/abs/2203.06026" target="_blank">Kynkäänniemi et al., ICLR, 2023</a></figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Unconditional generation</h1>
+                <div class="row">
+                    <div class="col-55 mt-4">
+                        <p>Four main types of generative models:</p>
+                        <ul>
+                            <li>Generative Adversarial Networks (GANs)</li>
+                            <li>Variational Autoencoders (VAEs)</li>
+                            <li>Normalizing Flows (NFs)</li>
+                            <li>Diffusion Models (DMs)</li>
+                        </ul>
+                        <p class="alert mt-4">For the image generation tasks considered in this work, VAEs and NFs do not achieve a sufficient level of quality.</p>
+                    </div>
+                    <div class="col-45 mt-5">
+                        <figure class="center">
+                            <img src="img/generative_methods_taxonomy.png" class="w-100">
+                            <figcaption>Source: <a href="https://arxiv.org/abs/2112.07804" target="_blank">Xiao et al., ICLR, 2022</a></figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Multi-domain translation as Conditional generation</h1>
+                <h2>GAN-based methods</h2>
+                <ul>
+                    <li><span class="alert">Vanilla GAN</span> : learn to generate data by training 2 neural networks -- the generator $G$ and the discriminator $D$ -- in competition with each other.</li>
+                    <figure class="center mb-3">
+                        <img src="img/gan_principle.png" class="w-30">
+                        <figcaption>Source: <a href="https://arxiv.org/abs/2111.13282" target="_blank">Ghojogh et al., arXiv, 2021</a></figcaption>
+                    </figure>
+                    <li><span class="alert">Pix2Pix</span> : Conditional GAN that learns a mapping from input images to output images, using paired training data.</li>
+                    <figure class="center">
+                        <img src="img/pix2pix_principle.png" class="w-60">
+                        <figcaption>Source: <a href="https://arxiv.org/abs/1611.07004" target="_blank">Isola et al., CVPR, 2017</a> (Pix2Pix)</figcaption>
+                    </figure>
+                </ul>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Multi-domain translation as Conditional generation</h1>
+                <h2>GAN-based methods</h2>
+                <ul>
+                    <li><span class="alert">CycleGAN</span> : learns to translate images from one domain to another without paired examples.</li>
+                    <figure class="center mb-3">
+                        <img src="img/cyclegan_principle.png" class="w-60">
+                        <figcaption>Source: <a href="https://arxiv.org/abs/1703.10593" target="_blank">Zhu et al., ICCV, 2017</a></figcaption>
+                    </figure>
+                    <li><span class="alert">StarGAN</span> : learns to perform image-to-image translation for multiple domains using a single model.</li>
+                    <figure class="center">
+                        <img src="img/stargan_principle.png" class="w-60">
+                        <figcaption>Source: <a href="https://arxiv.org/abs/1711.09020" target="_blank">Choi et al., CVPR, 2018</a> (StarGAN)</figcaption>
+                    </figure>
+                </ul>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Multi-domain translation as Conditional generation</h1>
+                <h2>GAN-based methods</h2>
+                <div class="row">
+                    <div class="col-40 mt-2">
+                        <p>Main limitations of these methods for MDT tasks : </p>
+                        <ol>
+                            <li class="mb-3">Domain definition may be restrictive (e.g. only faces)</li>
+                            <li class="mb-3">Can not take several domains as input conditions</li>
+                            <li class="mb-3">Can not generate multiple views at once</li>
+                            <li>Adversarial learning: known to be particularly unstable to train</li>
+                        </ol>
+                    </div>
+                    <div class="col-60">
+                        <figure class="center mt-4">
+                            <img src="img/stargan_results.jpg" class="w-90" alt="Results of StarGAN for multi-domain translation">
+                            <figcaption>Source: <a href="https://arxiv.org/abs/1711.09020" target="_blank">Choi et al., CVPR, 2018</a> (StarGAN)</figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Multi-domain translation as Conditional generation</h1>
+                <h2>Denoising Diffusion Probabilistic Models (<a href="https://arxiv.org/abs/2006.11239" target="_blank">Ho et al., NeurIPS, 2020</a>)</h2>
+                <ul>
+                    <li>Diffusion models are denoising models that learn to reverse a diffusion process.</li>
+                    <figure class="center mb-4">
+                        <img src="img/diffusion_principle_2.png" class="w-70">
+                        <figcaption>Source: <a href="https://arxiv.org/abs/2006.11239" target="_blank">Ho et al., NeurIPS, 2020</a></figcaption>
+                    </figure>
+                    <li>Key idea is that the forward diffusion process is fixed to a Markov process that gradually adds Gaussian noise</li>
+                    <li>$q(\mathbf{x}_t | \mathbf{x}_{t-1}) := \mathcal{N}(\mathbf{x}_t ; \sqrt{\alpha_t} \mathbf{x}_{t-1}, (1 - \alpha_t) \mathbf{I})$ with the $\alpha_t$ being predefined values to control the noise level at each step</li>
+                    <li>The model is trained to reverse the diffusion process, i.e. to give $p_\theta(\mathbf{x}_{t-1} | \mathbf{x}_t)$</li>
+                </ul>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Multi-domain translation as Conditional generation</h1>
+                <h2>Denoising Diffusion Probabilistic Models (<a href="https://arxiv.org/abs/2006.11239" target="_blank">Ho et al., NeurIPS, 2020</a>)</h2>
+                <p class="mt-3 mb-0">Training procedure:</p>
+                <ul>
+                    <li>Forward diffusion: DDPM formulation allows to compute $\mathbf{x}_t$ directly s.t. $\mathbf{x}_t = \sqrt{\bar{\alpha}_t} \mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_t} \epsilon$</li>
+                    <li>The model is trained to predict $\epsilon$, the noise used to compute $\mathbf{x}_t$</li>
+                    <li>The loss function is a MSE between the predicted noise $\hat{\epsilon}$ and the true noise $\epsilon$</li>
+                </ul>
+                <figure class="center">
+                    <img src="img/diffusion_training.png" class="w-75">
+                </figure>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Multi-domain translation as Conditional generation</h1>
+                <h2>Denoising Diffusion Probabilistic Models (<a href="https://arxiv.org/abs/2006.11239" target="_blank">Ho et al., NeurIPS, 2020</a>)</h2>
+                <p class="mt-3 mb-0">Generation procedure:</p>
+                <ul>
+                    <li>For each $t=T..0$, the model predicts $\hat{\mathbf{\epsilon}}$ and use it to recover $\hat{\mathbf{x}}_{0} = \left(\mathbf{x}_t - \alpha_t \hat{\mathbf{\epsilon}}\right) / \sqrt{\bar{\alpha}_t}$ </li>
+                    <li>The predicted $\hat{\mathbf{x}}_{0}$ is re-noised to obtain $\mathbf{x}_{t-1}$, that is used as input of the next iteration</li>
+                    <li>The process is repeated until the final image $\mathbf{x}_0$ is obtained</li>
+                </ul>
+                <figure class="center">
+                    <img src="img/diffusion_generation.png" class="w-75">
+                </figure>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Multi-domain translation as Conditional generation</h1>
+                <h2>Multi Source Diffusion Models (<a href="https://arxiv.org/abs/2302.02257" target="_blank">Mariani et al., ICLR, 2023</a>)</h2>
+                <ul>
+                    <li>Extension of diffusion models to multi-domain conditional generation</li>
+                    <li>Conditioning is performed by concatenating <span class="danger">domain to generate</span> with the <span class="success">available conditions</span></li>
+                    <li>During generation, <span class="alert">conditions are the noisy versions of the available views, $\forall t \in [T, 0]$</span></li>
+                </ul>
+                <figure class="center mt-4 mb-3">
+                    <img src="img/msdm_principle.png" class="w-60">
+                    <figcaption>Source: <a href="https://arxiv.org/abs/2302.02257" target="_blank">Mariani et al., ICLR, 2023</a></figcaption>
+                </figure>
+                <p><span class="success">All domain configurations possible</span>, <span class="danger">fully supervised</span></p>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Multi-domain translation as Conditional generation</h1>
+                <h2>Unified Multi-Modal Conditional Score-based Generative Model (<a href="https://arxiv.org/abs/2207.03430">Meng et al., arXiv, 2022</a>)</h2>
+                <ul>
+                    <li>Similar to MSDM but with a clean condition during training and generation</li>
+                    <li>A code is given as input to specify the <span class="danger">domain to generate</span> and the <span class="success">available conditions</span></li>
+                    <li>The model is trained to denoise only the part corresponding to the domain to generate</li>
+                </ul>
+                <figure class="center mt-4 mb-3">
+                    <img src="img/ummcsgm_principle.png" class="w-60">
+                    <figcaption>Source: <a href="https://arxiv.org/abs/2207.03430" target="_blank">Meng et al., arXiv, 2022</a></figcaption>
+                </figure>
+                <p><span class="success">All domain configurations possible</span>, <span class="danger">fully supervised</span></p>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Multi-domain translation as Conditional generation</h1>
+                <h2>Limitations of existing diffusion-based methods</h2>
+                <div class="row">
+                    <div class="col-40 mt-5">
+                        <ul>
+                            <li>Fully supervised: need all views for training</li>
+                            <li>No control on diversity of generated outputs</li>
+                            <li>May have homogeneity issues</li>
+                        </ul>
+                    </div>
+                    <div class="col-65">
+                        <figure class="center" style="position:relative; right:5em; bottom:2em;">
+                            <img src="img/noisycondition_consistency.png" class="w-100">
+                            <figure>
+                                <figcaption>MSDM generation: at first steps, the model predict blurred imgages and converge toward a data manifold that may not preserve the conditional features (blue). As generation progresses, the model gain access to conditional information and corrects its trajectory, toward the appropriate dataa manifold (brown)</figcaption>
+                            </figure>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Multi-Domain Diffusion (MDD)</h1>
+                <h2>Key idea: different noise levels for each domain</h2>
+                <div class="row">
+                    <div class="col-50 mt-5">
+                        <ul>
+                            <li>As with MSDM and UMM-CSGM, all views are concatenated</li>
+                            <li>Training : missing views are replaced by pure noise</li>
+                            <li>Generation : clean conditions</li>
+                        </ul>
+                        <p class="mt-3 grey">To be published in TMLR, preprint version <a href="https://arxiv.org/pdf/2309.14394" target="_blank">available on arXiv</a></p>
+                    </div>
+                    <div class="col-50">
+                        <figure class="center" style="position:relative; right:8em; bottom:2em;">
+                            <img src="img/cleancondition_consistency.png" class="w-100">
+                            <figure>
+                                <figcaption>Clean conditions guide the process, enabling the generation of intermediate images that better respect conditional information. (conditional domains are shown only at the initial timestep for clarity, though they are utilized at each step).</figcaption>
+                            </figure>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Multi-Domain Diffusion (MDD)</h1>
+                <h2>Semi-supervised training</h2>
+                <ul>
+                    <li>Missing views are replaced by pure noise, conditions have different levels of noise</li>
+                    <li>The model learns to denoise only the parts corresponding to available views</li>
+                    <li class="alert">This encourages learning the joint data distribution by using less noisy domains to reconstruct noisier one</li>
+                </ul>
+                <figure class="center mt-4">
+                    <img src="img/mdd_training.png" class="w-70">
+                </figure>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Multi-Domain Diffusion (MDD)</h1>
+                <h2>Generation</h2>
+                <ul>
+                    <li>$\phi(t)$ allows to define different noise strategy on the conditions</li>
+                    <li>Low $\phi(t)$ enforce high fidelity to the conditions (similar to clean conditions as in UMM-CSGM)</li>
+                    <li>High $\phi(t)$ allows more diversity (similar to noisy conditions as in MSDM)</li>
+                </ul>
+                <figure class="center mt-4">
+                    <img src="img/mdd_generation.png" class="w-70">
+                </figure>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Experiments</h1>
+                <h2>The Blender 3 Domain Translation (BL3NDT) dataset</h2>
+                <ul>
+                    <li>Synthetic dataset with 3 domains: cube, pyramid and icosphere</li>
+                    <li>40500 images of size 64x64</li>
+                    <li>Images of 3D objects rendered with multiple generation parameters and with semantic inversion</li>
+                </ul>
+                <figure class="center mt-4">
+                    <img src="img/blender3d_1.png" class="w-50">
+                    <img src="img/blender3d_2.png" class="w-25">
+                </figure>
+                <figure class="center">
+                    <img src="img/blender3d_paramtable.png" class="w-80">
+                </figure>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Experiments</h1>
+                <h2>The CelebAMask-HQ Dataset augmented with sketches</h2>
+                <ul>
+                    <li>2 domains (faces and semantic masks) from the <a href="https://github.com/switchablenorms/CelebAMask-HQ" target="_blank">CelebAMask-HQ</a> dataset (<a href="https://arxiv.org/abs/1907.11922" target="_blank">Lee et al., CVPR, 2020</a>)</li>
+                    <li>1 domain (sketches) generated with <a href="https://github.com/chaofengc/Face-Sketch-Wild" target="_blank">Face Sketch Synthesis in the Wild</a> (<a href="https://arxiv.org/abs/1812.04929" target="_blank">Chen et al., ACCV, 2018</a>)</li>
+                    <li>30000 images of size 256x256</li>
+                </ul>
+                <figure class="center mt-4">
+                    <img src="img/celeb3domains_example.png" class="w-70">
+                </figure>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Experiments</h1>
+                <h2>The BraTS 2020 Medical Dataset</h2>
+                <ul>
+                    <li>4 MRI modalities (FLAIR, T1, T1ce, and T2), and 3D tumor segmentations (with 4 classes)</li>
+                    <li>Initially, for a MICCAI 2020 challenge on multimodal brain tumor segmentation</li>
+                    <li>We used 2D slices of size 256x256 with binary semantic segmentation masks.</li>
+                </ul>
+                <figure class="center mt-4">
+                    <img src="img/brats_example.png" class="w-90">
+                </figure>
+            </section>
+
+        </div>
+    </div>
+
+
+    <script src="reveal/dist/reveal.js"></script>
+    <script src="reveal/plugin/notes/notes.js"></script>
+    <script src="reveal/plugin/highlight/highlight.js"></script>
+	<script src="reveal/plugin/math/math.js"></script>
+    <script src="reveal/plugin/zoom/zoom.js"></script>
+    <script src="reveal/plugin/reveald3.js"></script>
+    <script>
+        Reveal.initialize({
+            width: 1000,
+            height: 700,
+            margin: 0.05,
+            hash: true,
+            controls: false,
+            slideNumber: 'c/t',
+            showSlideNumber: 'all',
+            mouseWheel: true,
+            transition: 'none', // Transition style : none/fade/slide/convex/concave/zoom
+            progress: true,
+            autoPlayMedia: true,
+            plugins: [ RevealNotes, Reveald3, RevealZoom, RevealMath.KaTeX ]
+        });
+    </script>
+</body>
+</html>
