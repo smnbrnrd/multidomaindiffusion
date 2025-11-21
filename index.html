@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <title>Workshop Santiago</title>
+    <title>Semi-supervised multi-domain translation with diffusion models</title>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,13 +22,13 @@
                 <div class="institution">1. LITIS, Université de Rouen Normandie</div>
                 <div class="institution">2. LITIS, INSA Rouen Normandie</div>
                 <div class="institution">3. GREYC, Université Caen Normandie</div>
-                <p class="">Work published in <a href="https://openreview.net/forum?id=vYdT26kDYM" target="_blank">TMLR</a> in sept. 2025. Slides available at <a href="https://smnbrnrd.github.io/multidomaindiffusion/">smnbrnrd.github.io/multidomaindiffusion</a>.</p>
                 <div>
                     <img src="img/logo_litis.png" class="logo" alt="logo_litis">
-                    <img src="img/logo_urn.png" class="logo" alt="logo_urn" style="height: 3.65rem;">
+                    <img src="img/logo_urn.png" class="logo" alt="logo_urn">
                     <img src="img/logo_insarn.png" class="logo" alt="logo_insarn">
                     <img src="img/logo_anr.png" class="logo" alt="logo_anr">
                 </div>
+                <p class="mt-5">Work published in <a href="https://openreview.net/forum?id=vYdT26kDYM" target="_blank">TMLR</a> in sept. 2025. Slides available at <a href="https://smnbrnrd.github.io/multidomaindiffusion/">smnbrnrd.github.io/multidomaindiffusion</a>.</p>
             </section>
 
             <!--------------------------------------------->
@@ -159,7 +159,7 @@
             <!--------------------------------------------->
             <section>
                 <h1>Semi-supervised multi-domain translation</h1>
-                <h2>Challenges : model is not limited to specific translation directions</h2>
+                <h2>Challenges : models should not be limited to specific translation directions</h2>
                 <ul>
                     <li>DT setting with $N$ domains : $N \times (N-1)$ translation directions to be learned</li>
                     <li>MDT setting with $N$ domains : $2^N$ possible combinations</li>
@@ -170,7 +170,7 @@
                 </figure>
             </section>
 
-            <!--------------------------------------------->
+            <!---------------------------------------------
             <section>
                 <h1>Semi-supervised multi-domain translation</h1>
                 <h2>Challenges : generative context</h2>
@@ -181,7 +181,7 @@
                 <figure class="center mt-4">
                     <img src="img/generative_context.png" class="w-80" alt="generative context">
                 </figure>
-            </section>
+            </section>-->
 
             <!--------------------------------------------->
             <section>
@@ -408,7 +408,7 @@
             <!--------------------------------------------->
             <section>
                 <h1>Multi-domain translation as Conditional generation</h1>
-                <h2>Unified Multi-Modal Conditional Score-based Generative Model (<a href="https://arxiv.org/abs/2207.03430">Meng et al., arXiv, 2022</a>)</h2>
+                <h2>Unified Multi-Modal Conditional Score-based Generative Model (<a href="https://arxiv.org/abs/2207.03430" target="_blank">Meng et al., arXiv, 2022</a>)</h2>
                 <ul>
                     <li>Similar to MSDM but with a clean condition during training and generation</li>
                     <li>A code is given as input to specify the <span class="danger">domain to generate</span> and the <span class="success">available conditions</span></li>
@@ -580,7 +580,7 @@
                         <ul>
                             <li>Clean condition gives better results (aligns with findings from literature)</li>
                             <li>UMM generate more realistic images than MSDM but often oversaturated</li>
-                            <li class="alert">MDD gives SotA results for this task</li>
+                            <li class="success">MDD gives SotA results for this task</li>
                         </ul>
                         <figure class="center mt-4">
                             <img src="img/celeba_results2.png" class="w-100">
@@ -600,7 +600,8 @@
                 <h1>Experiments and results</h1>
                 <h2>The CelebAMask-HQ dataset augmented with sketches</h2>
                 <ul>
-                    <li>mask $\rightarrow$ (face, sketch) to explore the control-diversity tradeoff</li>
+                    <li>mask $\rightarrow$ (face, sketch) to explore the control-diversity trade-off</li>
+                    <li class="success">Generated images are diverse and aligned between domains</li>
                 </ul>
                 <figure class="center mt-3">
                     <img src="img/celeba_results3.png" class="w-95">
@@ -649,17 +650,50 @@
                 <h1>Conclusion</h1>
                 <p>Yes...</p>
                 <ul>
-                    <li>As far as we know, MDD is the only method that can perform <span class="alert">semi-supervised multi-domain</span> translation</li>
-                    <li>One model for <span class="alert">any number and any configuration of domains</span></li>
-                    <li>Any subset of views as input and as output, <span class="alert">for training and for generation</span></li>
-                    <li>Very good performance, even against SotA methods for fixed translation direction and/or fully supervised training</li>
-                    <li>Very high visual quality</li>
+                    <li>MDD is the only method that can perform <span class="alert">semi-supervised multi-domain</span> translation</li>
+                    <li><span class="alert">Any subset of views as input and as output</span>, for training and for generation</li>
+                    <li><span class="alert">One model for all translation configurations</span></li>
+                    <li>Very good performances, even against SotA methods for fixed translation direction and/or fully supervised training</li>
                 </ul>
                 <p>But...</p>
                 <ul>
-                    <li>Scalability of combining information from an increasing number of domains within a single latent vector could become a bottleneck</li>
+                    <li>No consensual evaluation metric for this task</li>
+                    <li>Combining information from an increasing number of domains within a single latent vector could become a bottleneck</li>
+                    <li>"One model" but with an encoder and a decoder per domain (concatenation and diffusion in the latent space)</li>
+                    <li>Shared general-purpose pretrained encoder-decoder is feasible but challenging with heterogenous domains (e.g. text and images)</li>
                 </ul>
-                
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Other related work</h1>
+                <h2>TD-Paint : transposition of MDD ideas to inpainting task</h2>
+                <ul>
+                    <li>Variable noise levels at the pixel level (instead of per domain as in MDD)</li>
+                    <li>Only masked pixels are noised, the rest is kept clean</li>
+                </ul>
+                <div class="row">
+                    <div class="col-50">
+                        <figure class="center mt-4">
+                            <img src="img/tdpaint_illustration1.png" class="w-65">
+                        </figure>
+                    </div>
+                    <div class="col-50">
+                        <figure class="center mt-4">
+                            <img src="img/tdpaint_illustration2.png" class="w-80">
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!--------------------------------------------->
+            <section>
+                <h1>Other related work</h1>
+                <h2>TD-Paint : transposition of MDD ideas to inpainting task</h2>
+                <figure class="center mt-4">
+                    <img src="img/tdpaint_results.png" class="w-95">
+                    <figcaption class="big"><a href="https://openreview.net/forum?id=erWwBoR59l" target="_blank">Mayet et al., "TD-Paint: Faster Diffusion Inpainting Through Time Aware Pixel Conditioning", ICLR 2025</a></figcaption>
+                </figure>
             </section>
 
         </div>
