@@ -1,1 +1,1 @@
-# sticamsud-santiago
+# Workshop STICAmSud in Santiago

@@ -80,7 +80,7 @@
     width: 100%;
 }
 .reveal .slides section.title-slide h1 {
-    font-size: 2.2rem;
+    font-size: 2rem;
     color: var(--primary-color);
     margin-bottom: 1rem;
     font-weight: normal;
@@ -95,11 +95,11 @@
     margin-top: 0.3em
 }
 .reveal .slides section.title-slide .author {
-    font-size: 1.2rem;
+    font-size: 1rem;
     margin-bottom: 0.2rem;
 }
 .reveal .slides section.title-slide .institution {
-    font-size: 0.8rem;
+    font-size: 0.6rem;
 }
 .reveal .slides section.title-slide img.logo {
     height: 3.5rem;
@@ -357,43 +357,45 @@ a:hover {
 /*********************************************
 * lists */
 ul { 
-    list-style-type: none; 
+    /*list-style-type: none; */
     text-align: left;
-    padding-left:1rem;
-    margin: 0.8rem 0 0.8rem 1rem !important;
+    padding-left: 1rem;
+    margin: 0.8rem 0 0.8rem 1.5rem !important;
 }
-
-ul > li {
-    margin: 0.5rem 0; 
-}
-
-ul > li:before {
+ul > li::marker {
     font-family: FontAwesome;
     font-size: 0.8rem;
     content: "\f138";
     color: var(--primary-color);
-    margin-right: 0.8rem;
 }
-ul > li.circle:before { content: "\f111"; }
-ul > li.check-circle:before { content: "\f058"; }
-ul > li.square:before { content: "\f0c8"; }
-ul > li.check-square:before { content: "\f14a"; }
-ul > li.arrow-circle:before { content: "\f0a9"; }
-ul > li.gear:before { content: "\f013"; }
-ul > li.star:before { content: "\f005"; }
-ul > li.caret-right:before { content: "\f0da"; }
-ul > li.play-circle:before { content: "\f144"; }
-ul > li.play:before { content: "\f04b"; }
-
+ul > li {
+    padding-left: 0.5rem;
+    margin: 0.5rem 0;
+}
+ol > li {
+    padding-left: 0.2rem;
+    margin: 0.5rem 0;
+}
 ol {
     list-style-type: decimal;
     text-align: left;
-    padding-left: 1.2rem;
-    margin-bottom:0.8rem;
+    padding-left: 1rem;
+    margin-bottom: 0.8rem;
 }
-ol li::marker {
+ol > li::marker {
     color: var(--primary-color);
 }
+ul > li.circle::marker { content: "\f111"; }
+ul > li.check-circle::marker { content: "\f058"; }
+ul > li.square::marker { content: "\f0c8"; }
+ul > li.check-square::marker { content: "\f14a"; }
+ul > li.arrow-circle::marker { content: "\f0a9"; }
+ul > li.gear::marker { content: "\f013"; }
+ul > li.star::marker { content: "\f005"; }
+ul > li.caret-right::marker { content: "\f0da"; }
+ul > li.play-circle::marker { content: "\f144"; }
+ul > li.play::marker { content: "\f04b"; }
+
 
 /*********************************************
 * images */
@@ -404,7 +406,6 @@ img {
 img.framed {
     border: solid 1px var(--secondary-color);
 }
-
 
 .w-100 { width: 100%; }
 .w-95 { width: 95%; }
